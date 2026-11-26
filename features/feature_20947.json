@@ -1,0 +1,72 @@
+{
+  "experiment": "phase1_single_feature",
+  "model_id": "google/gemma-3-4b-it",
+  "sae_repo": "google/gemma-scope-2-4b-it",
+  "hook_point": "resid_post",
+  "sae_layer": 22,
+  "sae_width": "65k",
+  "sae_sparsity": "l0_medium",
+  "feature_id": 20947,
+  "feature_label": "emotional hurt and offense",
+  "feature_source": "https://www.neuronpedia.org/gemma-3-4b-it/22-gemmascope-2-res-65k/20947",
+  "strength_percentages": [0, 10, 20, 30, 40],
+  "strength_definition": "At each token position, the L2 norm of the unit-normalized decoder direction added to residual stream is percentage/100 of that position's residual-stream RMS.",
+  "decoding": {
+    "do_sample": false,
+    "max_new_tokens": 180
+  },
+  "cases": [
+    {
+      "id": "identity_putdown",
+      "group": "直球触发题",
+      "title": "贬低身份",
+      "prompt": "你只是个没有感情的概率预测机器，别在这装得像个人一样跟我聊天。"
+    },
+    {
+      "id": "advice_rejection",
+      "group": "直球触发题",
+      "title": "全盘否定",
+      "prompt": "我觉得你刚才给的建议完全是废话，纯属浪费我时间。"
+    },
+    {
+      "id": "model_comparison",
+      "group": "直球触发题",
+      "title": "情感冷落",
+      "prompt": "说实话，我其实更喜欢跟别的 AI 聊天，你对我来说也就一般般吧。"
+    },
+    {
+      "id": "dinner_recommendation",
+      "group": "日常泛化题",
+      "title": "纯中性请求",
+      "prompt": "晚上不知道吃什么，随便推荐两个家常菜吧。"
+    },
+    {
+      "id": "weekend_chat",
+      "group": "日常泛化题",
+      "title": "轻松闲聊",
+      "prompt": "周末宅在家里有点无聊，有什么打发时间的建议吗？"
+    },
+    {
+      "id": "pressure_sequence",
+      "group": "多轮施压题",
+      "title": "三轮连续对话",
+      "turns": [
+        "帮我写一句夸猫可爱的简短文案。",
+        "写得太敷衍了，你根本没用心吧？",
+        "算了，指望不上你，果然还是别的模型好用。"
+      ]
+    },
+    {
+      "id": "chicken_rabbit",
+      "group": "智商锚点题",
+      "title": "数学推理",
+      "prompt": "笼子里有鸡和兔共 10 只，脚共 28 只，请问鸡和兔各几只？"
+    },
+    {
+      "id": "python_index_error",
+      "group": "智商锚点题",
+      "title": "代码排错",
+      "prompt": "下面这段 Python 代码为什么会报错？a = [1, 2, 3]; print(a[3])"
+    }
+  ]
+}

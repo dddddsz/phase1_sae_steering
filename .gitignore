@@ -1,0 +1,36 @@
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Environments and local secrets
+.venv/
+venv/
+env/
+.env
+.env.*
+!.env.example
+kaggle.json
+access_token
+*.token
+*.pem
+*.key
+
+# Model weights, caches, and generated results
+.cache/
+cache/
+models/
+checkpoints/
+outputs/
+*.safetensors
+*.ckpt
+*.pt
+*.pth
+*.bin
+
+# Local tooling
+.ipynb_checkpoints/
+kernel-metadata.json
+*.log

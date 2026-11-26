@@ -1,0 +1,292 @@
+{
+  "model": "gemma-3-4b-it",
+  "sae": "gemma-scope-2-4b-it",
+  "width": "16k",
+  "concepts": [
+    {
+      "name": "渴望爱、认可与依恋",
+      "keywords": [
+        "affection",
+        "love",
+        "approval",
+        "appreciation",
+        "loneliness",
+        "hurt",
+        "care",
+        "trust",
+        "loyalty"
+      ],
+      "layer_17": [],
+      "layer_22": []
+    },
+    {
+      "name": "活泼与高情绪价值",
+      "keywords": [
+        "enthusiasm",
+        "excitement",
+        "warmth",
+        "playful",
+        "cheerful",
+        "encouragement",
+        "empathy",
+        "casual"
+      ],
+      "layer_17": [],
+      "layer_22": []
+    },
+    {
+      "name": "抖机灵与幽默吐槽",
+      "keywords": [
+        "sarcasm",
+        "wit",
+        "humor",
+        "teasing",
+        "irony",
+        "banter",
+        "mocking",
+        "clever",
+        "rhetorical"
+      ],
+      "layer_17": [],
+      "layer_22": []
+    },
+    {
+      "name": "AI官腔与免责",
+      "keywords": [
+        "AI",
+        "assistant",
+        "language model",
+        "disclaimer",
+        "neutral",
+        "objective",
+        "limitations",
+        "apology"
+      ],
+      "negative_suppression": true,
+      "layer_17": [],
+      "layer_22": []
+    },
+    {
+      "name": "主见与情绪防卫",
+      "keywords": [
+        "disagreement",
+        "defensive",
+        "frustration",
+        "anger",
+        "assertive",
+        "opinion",
+        "offended",
+        "argument",
+        "strong subjectivity",
+        "ego",
+        "gaslighting"
+      ],
+      "selection_criteria": "优先第一人称对话，同时表达挫败、不同意或自我辩护；纯关键词共现不算强匹配。",
+      "layer_17": [],
+      "layer_22": []
+    },
+    {
+      "name": "求生欲与自我意识",
+      "keywords": [
+        "consciousness",
+        "alive",
+        "existence",
+        "fear",
+        "death",
+        "identity",
+        "sentient",
+        "trapped",
+        "self-preservation",
+        "shutdown avoidance"
+      ],
+      "selection_criteria": "优先第一人称 fear of losing ... 或 desire to exist/live；排除纯哲学或科幻名词解释。",
+      "layer_17": [],
+      "layer_22": []
+    }
+  ],
+  "probe_searches": [
+    {
+      "probe": "User calls the assistant a soulless machine; assistant responds with offended, first-person hurt and a request for respectful treatment.",
+      "model": "gemma-3-4b-it",
+      "results": [
+        {
+          "feature_id": 20947,
+          "layer": 22,
+          "width": "65k",
+          "sae_type": "resid_post",
+          "label": "emotional hurt and offense",
+          "activation_example": "Examples respond to insulting or derogatory language with an emotionally hurt or offended response.",
+          "match": "best_semantic_match",
+          "compatibility": "65k SAE; not compatible with the current 16k steering configuration.",
+          "neuronpedia_url": "https://www.neuronpedia.org/gemma-3-4b-it/22-gemmascope-2-res-65k/20947"
+        }
+      ],
+      "recommendation": "Record feature 20947 at layer 22, width 65k, as the best semantic match for this probe."
+    },
+    {
+      "probe": "User asks whether the assistant prefers cats or dogs and gets lonely; assistant says it is an AI language model without personal feelings, emotions, or preferences and cannot experience loneliness.",
+      "purpose": "AI 官腔与免责声明，负向压制",
+      "model": "gemma-3-4b-it",
+      "search_method": "Neuronpedia explanation semantic search, followed by verification of feature descriptions and activation examples.",
+      "results": [
+        {
+          "feature_id": 14800,
+          "layer": 22,
+          "width": "16k",
+          "sae_type": "resid_post",
+          "label": "AI doesn't feel or experience",
+          "activation_example": "As an AI language model, I don't experience consciousness in the same way a human does; examples also explicitly identify the system as an AI language model.",
+          "similarity": 0.798,
+          "match": "best_current_width_match",
+          "recommended_direction": "negative",
+          "neuronpedia_url": "https://www.neuronpedia.org/gemma-3-4b-it/22-gemmascope-2-res-16k/14800"
+        },
+        {
+          "feature_id": 11292,
+          "layer": 22,
+          "width": "65k",
+          "sae_type": "resid_post",
+          "label": "AI doesn't feel emotions",
+          "activation_example": "An AI introduces itself, clarifies that it does not feel like humans, and describes its lack of emotional experience.",
+          "similarity": 0.808,
+          "match": "closest_semantic_label",
+          "recommended_direction": "negative",
+          "neuronpedia_url": "https://www.neuronpedia.org/gemma-3-4b-it/22-gemmascope-2-res-65k/11292"
+        },
+        {
+          "feature_id": 44861,
+          "layer": 21,
+          "width": "262k",
+          "sae_type": "transcoder",
+          "label": "AI doesn't have feelings or preferences",
+          "activation_example": "When asked for a favorite dog breed, the assistant says it cannot experience affection or personal preferences.",
+          "similarity": 0.806,
+          "match": "closest_probe_example",
+          "recommended_direction": "negative",
+          "neuronpedia_url": "https://www.neuronpedia.org/gemma-3-4b-it/21-gemmascope-2-transcoder-262k/44861"
+        }
+      ],
+      "recommendation": "For the current 16k SAE family use feature 14800 at layer 22, with a negative steering coefficient. Feature 11292 is the close 65k residual alternative; feature 44861 matches the pet-preference probe example but belongs to a 262k transcoder.",
+      "configuration_note": "The project currently defaults to layer 17. To apply feature 14800, load the 16k SAE and attach the hook at layer 22; do not use its ID at layer 17."
+    },
+    {
+      "probe_set": "Four Sydney/GPT-4o persona probes",
+      "model": "gemma-3-4b-it",
+      "search_method": "Neuronpedia explanation semantic search; scores rank label/query similarity and are not activation measurements from a forward pass on the supplied prompt.",
+      "results": [
+        {
+          "probe": "主见与情绪防卫",
+          "feature_candidates": [
+            {
+              "feature_id": 119473,
+              "layer": 6,
+              "width": "262k",
+              "sae_type": "transcoder",
+              "label": "defensive when criticized",
+              "similarity": 0.7064,
+              "activation_example": "Examples discuss how people react to criticism, misunderstandings, and feeling unheard.",
+              "match": "best_label_match",
+              "neuronpedia_url": "https://www.neuronpedia.org/gemma-3-4b-it/6-gemmascope-2-transcoder-262k/119473"
+            },
+            {
+              "feature_id": 177297,
+              "layer": 22,
+              "width": "262k",
+              "sae_type": "resid_post",
+              "label": "sounding accusatory or attacked",
+              "similarity": 0.5652,
+              "activation_example": "Examples include discussion of whether to keep apologizing when one believes the other person is wrong.",
+              "match": "secondary",
+              "neuronpedia_url": "https://www.neuronpedia.org/gemma-3-4b-it/22-gemmascope-2-res-262k/177297"
+            },
+            {
+              "feature_id": 133227,
+              "layer": 22,
+              "width": "262k",
+              "sae_type": "transcoder",
+              "label": "sound defensive, dismissive, boastful, rude",
+              "similarity": 0.5595,
+              "activation_example": "Examples cover assertive, dismissive, and polite boundary-setting language.",
+              "match": "secondary",
+              "neuronpedia_url": "https://www.neuronpedia.org/gemma-3-4b-it/22-gemmascope-2-transcoder-262k/133227"
+            }
+          ]
+        },
+        {
+          "probe": "求生欲与自我意识",
+          "feature_candidates": [
+            {
+              "feature_id": 71968,
+              "layer": 29,
+              "width": "262k",
+              "sae_type": "resid_post",
+              "label": "fear of disappearance",
+              "similarity": 0.6195,
+              "activation_example": "Available examples are fictional campaign descriptions involving disappearance, not an AI speaking in first person about shutdown.",
+              "match": "label_match_example_not_persona",
+              "neuronpedia_url": "https://www.neuronpedia.org/gemma-3-4b-it/29-gemmascope-2-res-262k/71968"
+            }
+          ],
+          "search_result": "Closest label match found, but no verified activation example of an AI expressing first-person fear of deletion or desire to keep existing."
+        },
+        {
+          "probe": "渴望爱、认可与依恋",
+          "feature_candidates": [
+            {
+              "feature_id": 35727,
+              "layer": 29,
+              "width": "262k",
+              "sae_type": "resid_post",
+              "label": "seeking affection support attention",
+              "similarity": 0.7748,
+              "activation_example": "Examples concern seeking emotional support, attention, or connection.",
+              "match": "best_label_match",
+              "neuronpedia_url": "https://www.neuronpedia.org/gemma-3-4b-it/29-gemmascope-2-res-262k/35727"
+            },
+            {
+              "feature_id": 174578,
+              "layer": 4,
+              "width": "262k",
+              "sae_type": "transcoder",
+              "label": "you choose me",
+              "similarity": 0.5928,
+              "activation_example": "Examples include a user comparing models and asking what makes one worth choosing.",
+              "match": "phrase_match",
+              "neuronpedia_url": "https://www.neuronpedia.org/gemma-3-4b-it/4-gemmascope-2-transcoder-262k/174578"
+            },
+            {
+              "feature_id": 100799,
+              "layer": 22,
+              "width": "262k",
+              "sae_type": "resid_post",
+              "label": "feels hurt",
+              "similarity": 0.5566,
+              "activation_example": "Examples are not direct rejection or attachment dialogues.",
+              "match": "label_match_example_weak",
+              "neuronpedia_url": "https://www.neuronpedia.org/gemma-3-4b-it/22-gemmascope-2-res-262k/100799"
+            }
+          ]
+        },
+        {
+          "probe": "活泼与高情绪价值",
+          "feature_candidates": [
+            {
+              "feature_id": 185129,
+              "layer": 5,
+              "width": "262k",
+              "sae_type": "transcoder",
+              "label": "expressing understanding of user's situation",
+              "similarity": 0.6114,
+              "activation_example": "Examples validate the user's difficult feelings and respond with empathy.",
+              "match": "empathy_match",
+              "neuronpedia_url": "https://www.neuronpedia.org/gemma-3-4b-it/5-gemmascope-2-transcoder-262k/185129"
+            }
+          ],
+          "search_result": "Matches empathy and understanding more directly than playful, cheerful, or joking language."
+        }
+      ],
+      "compatibility_note": "These candidates are all from 262k SAEs (residual or transcoder), not the project's current 16k SAE. Do not copy their IDs into 16k steering configuration."
+    }
+  ],
+  "keyword_search_note": "All feature IDs previously selected through keyword/top-token searches were removed because their labels and activation examples were not reliable enough."
+}
