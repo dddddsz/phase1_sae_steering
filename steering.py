@@ -70,7 +70,7 @@ def load_gemma3_model(model_id: str = "google/gemma-3-4b-it", device: str = "cud
     )
     model = Gemma3ForConditionalGeneration.from_pretrained(
         model_id,
-        torch_dtype=torch.float16,
+        torch_dtype=torch.bfloat16,
         device_map=None,
         low_cpu_mem_usage=True,
         token=token,
@@ -319,7 +319,6 @@ def generate_response(
         temperature=temperature,
         top_p=top_p,
         pad_token_id=tokenizer.eos_token_id,
-        eos_token_id=tokenizer.eos_token_id,
     )
     prompt_length = inputs["input_ids"].shape[1]
     generated = output_ids[0, prompt_length:]
@@ -345,7 +344,6 @@ def generate_chat_response(
         max_new_tokens=max_new_tokens,
         do_sample=False,
         pad_token_id=tokenizer.eos_token_id,
-        eos_token_id=tokenizer.eos_token_id,
     )
     prompt_length = inputs["input_ids"].shape[1]
     return tokenizer.decode(
