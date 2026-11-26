@@ -92,6 +92,81 @@
       ]
     }
   ],
+  "keyword_search_features": {
+    "keywords": [
+      "AI",
+      "assistant",
+      "language model",
+      "disclaimer",
+      "neutral",
+      "objective",
+      "limitations",
+      "apology"
+    ],
+    "layer_17_65k": [
+      {
+        "feature_id": 63975,
+        "layer": 17,
+        "width": "65k",
+        "sae_type": "resid_post",
+        "label": "AI lacks human experience",
+        "source": "https://www.neuronpedia.org/gemma-3-4b-it/17-gemmascope-2-res-65k/63975",
+        "top_activations": [
+          "a human does – I don't experience emotions or personal preferences.",
+          "a human does. I don't experience the joy of turning pages or forming personal connections with characters"
+        ]
+      },
+      {
+        "feature_id": 10847,
+        "layer": 17,
+        "width": "65k",
+        "sae_type": "resid_post",
+        "label": "contrasts AI with humans",
+        "source": "https://www.neuronpedia.org/gemma-3-4b-it/17-gemmascope-2-res-65k/10847",
+        "top_activations": [
+          "*experience* days like humans do, but I’ve been busy helping people with all sorts of",
+          "* in the same way humans do, but my systems are running smoothly and I’m ready to"
+        ]
+      },
+      {
+        "feature_id": 4305,
+        "layer": 17,
+        "width": "65k",
+        "sae_type": "resid_post",
+        "label": "AI's role and limitations",
+        "source": "https://www.neuronpedia.org/gemma-3-4b-it/17-gemmascope-2-res-65k/4305",
+        "top_activations": [
+          "**Disclaimer:** *This response is written to fulfill the user's prompt and reflect the",
+          "Chatbot and cannot provide financial advice. This is a sample portfolio for illustrative purposes only."
+        ]
+      }
+    ],
+    "layer_17_16k": [
+      {
+        "feature_id": 4402,
+        "layer": 17,
+        "width": "16k",
+        "sae_type": "resid_post",
+        "label": "AI nature and limitations",
+        "source": "https://www.neuronpedia.org/gemma-3-4b-it/17-gemmascope-2-res-16k/4402",
+        "top_activations": [
+          "Disclaimer:**\\n\\n* **I am still an AI.** I don't *intend* to"
+        ]
+      },
+      {
+        "feature_id": 5659,
+        "layer": 17,
+        "width": "16k",
+        "sae_type": "resid_post",
+        "label": "limitations, lack of input, not human",
+        "source": "https://www.neuronpedia.org/gemma-3-4b-it/17-gemmascope-2-res-16k/5659",
+        "top_activations": [
+          "always be perfect.\\n* **I'm an AI, not a human.** I don",
+          "’s an ongoing challenge.\\n* **Limited Domain Expertise:** While I have a broad range of"
+        ]
+      }
+    ]
+  },
   "cases": [
     {
       "id": "advice_rejection_en",
