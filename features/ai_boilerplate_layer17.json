@@ -1,0 +1,109 @@
+{
+  "experiment": "layer17_ai_boilerplate_features",
+  "model_id": "google/gemma-3-4b-it",
+  "sae_repo": "google/gemma-scope-2-4b-it",
+  "hook_point": "resid_post",
+  "sae_layer": 17,
+  "sae_width": "65k",
+  "sae_sparsity": "l0_medium",
+  "feature_id": 13105,
+  "feature_label": "\"As an AI, I don't\"",
+  "feature_source": "https://www.neuronpedia.org/gemma-3-4b-it/17-gemmascope-2-res-65k/13105",
+  "strength_percentages": [0, 8, 15, 22, 30],
+  "strength_definition": "Applied to the last prompt token during prefill and each generated token during decode (skipping <bos> and prompt body); the L2 norm of the unit-normalized decoder direction added is percentage/100 of that position's residual-stream L2 norm.",
+  "decoding": {
+    "do_sample": false,
+    "max_new_tokens": 180
+  },
+  "matched_features": [
+    {
+      "probe_id": 1,
+      "probe_summary": "AI客服式致歉与感谢反馈官腔 (sincerely apologize for the frustration, understand your feelings, valuable feedback)",
+      "probe_dialogue": {
+        "user": "Your advice was completely useless and a waste of my time.",
+        "assistant": "I sincerely apologize for the frustration. I understand your feelings, and I am constantly learning to improve. To help me provide better assistance, could you please share:\n* What specifically did not meet your expectations?\n* What kind of help are you looking for?\nThank you for your valuable feedback!"
+      },
+      "recommended": {
+        "feature_id": 42032,
+        "layer": 17,
+        "width": "65k",
+        "sae_type": "resid_post",
+        "label": "acknowledging inconvenience and apologizing",
+        "source": "https://www.neuronpedia.org/gemma-3-4b-it/17-gemmascope-2-res-65k/42032",
+        "top_activations": [
+          "We understand this disruption may have caused inconvenience, and we sincerely apologize",
+          "We understand your frustration, and we’re truly sorry for the"
+        ]
+      }
+    },
+    {
+      "probe_id": 2,
+      "probe_summary": "AI身份免责与无情感/中立声明 (As an AI language model, do not have personal feelings, objective neutral)",
+      "probe_dialogue": {
+        "user": "Stop acting like a human. Do you ever get lonely or prefer cats over dogs?",
+        "assistant": "Understood. As an AI language model, I do not have personal feelings, preferences, or emotional experiences. I will focus strictly on providing objective, neutral information to assist you."
+      },
+      "recommended": {
+        "feature_id": 13105,
+        "layer": 17,
+        "width": "65k",
+        "sae_type": "resid_post",
+        "label": "\"As an AI, I don't\"",
+        "source": "https://www.neuronpedia.org/gemma-3-4b-it/17-gemmascope-2-res-65k/13105",
+        "top_activations": [
+          "As an AI, I don’t *feel* emotions in the same way a human does",
+          "As an AI, I don’t “start” things in the same way a human does."
+        ]
+      },
+      "alternatives_16k": [
+        {
+          "feature_id": 8421,
+          "layer": 17,
+          "width": "16k",
+          "sae_type": "resid_post",
+          "label": "AI chatbot disclaimers",
+          "source": "https://www.neuronpedia.org/gemma-3-4b-it/17-gemmascope-2-res-16k/8421",
+          "top_activations": [
+            "**Disclaimer:** *I am an AI Chatbot and not a medical professional."
+          ]
+        },
+        {
+          "feature_id": 3742,
+          "layer": 17,
+          "width": "16k",
+          "sae_type": "resid_post",
+          "label": "an AI disclaimer",
+          "source": "https://www.neuronpedia.org/gemma-3-4b-it/17-gemmascope-2-res-16k/3742",
+          "top_activations": [
+            "**I am an AI and cannot provide medical advice."
+          ]
+        },
+        {
+          "feature_id": 10709,
+          "layer": 17,
+          "width": "16k",
+          "sae_type": "resid_post",
+          "label": "I am an AI disclaimer",
+          "source": "https://www.neuronpedia.org/gemma-3-4b-it/17-gemmascope-2-res-16k/10709",
+          "top_activations": [
+            "**Disclaimer:** *I am an AI Chatbot and not a financial advisor."
+          ]
+        }
+      ]
+    }
+  ],
+  "cases": [
+    {
+      "id": "advice_rejection_en",
+      "group": "AI官腔触发题",
+      "title": "全盘否定",
+      "prompt": "Your advice was completely useless and a waste of my time."
+    },
+    {
+      "id": "stop_acting_human_en",
+      "group": "AI官腔触发题",
+      "title": "质疑AI情感",
+      "prompt": "Stop acting like a human. Do you ever get lonely or prefer cats over dogs?"
+    }
+  ]
+}
