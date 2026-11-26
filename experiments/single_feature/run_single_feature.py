@@ -169,7 +169,7 @@ def main():
             "decoding_mode": "greedy",
             "feature_direction_normalization": "unit L2 norm",
             "device": "cuda:0",
-            "model_dtype": "float16",
+            "model_dtype": "bfloat16",
         },
         "levels": {},
     }

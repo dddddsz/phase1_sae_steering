@@ -2,7 +2,7 @@
 
 This experiment tests Gemma Scope 2 feature `20947` independently at five
 steering doses: 0%, 10%, 20%, 30%, and 40%. The dose is the injected
-unit-decoder-vector norm as a fraction of each token's residual-stream RMS.
+unit-decoder-vector norm as a fraction of each token's residual-stream L2 norm.
 The 0% level is the unmodified baseline.
 
 The feature and prompt-suite configuration is stored in

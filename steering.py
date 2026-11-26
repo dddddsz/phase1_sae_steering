@@ -252,18 +252,18 @@ class SteeringHookManager:
         original_dtype = hidden.dtype
         steered = hidden.float()
         if self.relative_strength:
-            residual_rms = torch.linalg.vector_norm(
+            residual_scale = torch.linalg.vector_norm(
                 steered, dim=-1, keepdim=True
-            ) / (steered.shape[-1] ** 0.5)
+            )
         else:
-            residual_rms = 1.0
+            residual_scale = 1.0
         if self.positive_vector is not None:
             steered = steered + (
-                self.positive_strength * residual_rms * self.positive_vector
+                self.positive_strength * residual_scale * self.positive_vector
             )
         if self.negative_vector is not None:
             steered = steered - (
-                self.negative_strength * residual_rms * self.negative_vector
+                self.negative_strength * residual_scale * self.negative_vector
             )
         steered = torch.nan_to_num(
             steered, nan=0.0, posinf=torch.finfo(original_dtype).max,
