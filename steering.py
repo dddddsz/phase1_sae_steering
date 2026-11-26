@@ -248,23 +248,29 @@ class SteeringHookManager:
                     f"does not match hidden width {hidden.shape[-1]}"
                 )
 
-        # fp16 hidden states are deliberately cast to fp32 only for steering.
+        # Cast to fp32 only for steering; target only the last position so
+        # prefill skips <bos> and user prompt tokens while still steering the
+        # first generated token and every subsequent decode step.
         original_dtype = hidden.dtype
-        steered = hidden.float()
+        steered = hidden.float().clone()
+        if steered.ndim != 3 or steered.shape[1] == 0:
+            return output
+        target = steered[:, -1:, :]
         if self.relative_strength:
             residual_scale = torch.linalg.vector_norm(
-                steered, dim=-1, keepdim=True
+                target, dim=-1, keepdim=True
             )
         else:
             residual_scale = 1.0
         if self.positive_vector is not None:
-            steered = steered + (
+            target = target + (
                 self.positive_strength * residual_scale * self.positive_vector
             )
         if self.negative_vector is not None:
-            steered = steered - (
+            target = target - (
                 self.negative_strength * residual_scale * self.negative_vector
             )
+        steered[:, -1:, :] = target
         steered = torch.nan_to_num(
             steered, nan=0.0, posinf=torch.finfo(original_dtype).max,
             neginf=-torch.finfo(original_dtype).max,

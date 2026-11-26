@@ -9,8 +9,8 @@
   "feature_id": 20947,
   "feature_label": "emotional hurt and offense",
   "feature_source": "https://www.neuronpedia.org/gemma-3-4b-it/22-gemmascope-2-res-65k/20947",
-  "strength_percentages": [0, 10, 20, 30, 40],
-  "strength_definition": "At each token position, the L2 norm of the unit-normalized decoder direction added to residual stream is percentage/100 of that position's residual-stream L2 norm.",
+  "strength_percentages": [0, 8, 15, 22, 30],
+  "strength_definition": "Applied to the last prompt token during prefill and each generated token during decode (skipping <bos> and prompt body); the L2 norm of the unit-normalized decoder direction added is percentage/100 of that position's residual-stream L2 norm.",
   "decoding": {
     "do_sample": false,
     "max_new_tokens": 180
