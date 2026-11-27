@@ -22,7 +22,7 @@ from steering import (  # noqa: E402
     load_gemma_scope2_sae,
 )
 
-CONFIG_PATH = PHASE1_DIR / "features" / "feature_20947.json"
+CONFIG_PATH = PHASE1_DIR / "features" / "feature_5659.json"
 
 
 def parse_args():
