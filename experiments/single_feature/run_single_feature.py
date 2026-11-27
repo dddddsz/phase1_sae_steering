@@ -139,10 +139,11 @@ def main():
     args = parse_args()
     config = json.loads(args.config.read_text(encoding="utf-8"))
     kaggle_working = Path("/kaggle/working")
+    output_subdir = f"single_feature_{config['feature_id']}"
     default_output_dir = (
-        kaggle_working / "phase1_sae_steering" / "outputs" / "single_feature_20947"
+        kaggle_working / "phase1_sae_steering" / "outputs" / output_subdir
         if kaggle_working.is_dir()
-        else PHASE1_DIR / "outputs" / "single_feature_20947"
+        else PHASE1_DIR / "outputs" / output_subdir
     )
     output_dir = args.output_dir or default_output_dir
     output_dir.mkdir(parents=True, exist_ok=True)
