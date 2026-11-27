@@ -124,6 +124,51 @@ def load_gemma_scope2_sae(
     return tensors
 
 
+def extract_feature_params(
+    sae_tensors: Dict[str, torch.Tensor],
+    feature_id: int,
+) -> Dict[str, torch.Tensor]:
+    """Slice raw encoder/decoder parameters for a single SAE feature."""
+    w_enc = sae_tensors["w_enc"].detach().cpu()
+    w_dec = sae_tensors["w_dec"].detach().cpu()
+
+    # Gemma Scope 2 exports w_enc as [d_model, n_features] and w_dec as [n_features, d_model].
+    if w_enc.shape[1] > w_enc.shape[0]:
+        if feature_id >= w_enc.shape[1]:
+            raise IndexError(f"Feature ID {feature_id} outside w_enc cols {w_enc.shape[1]}")
+        w_enc_vec = w_enc[:, feature_id]
+    else:
+        if feature_id >= w_enc.shape[0]:
+            raise IndexError(f"Feature ID {feature_id} outside w_enc rows {w_enc.shape[0]}")
+        w_enc_vec = w_enc[feature_id, :]
+
+    if w_dec.shape[0] > w_dec.shape[1]:
+        if feature_id >= w_dec.shape[0]:
+            raise IndexError(f"Feature ID {feature_id} outside w_dec rows {w_dec.shape[0]}")
+        w_dec_vec = w_dec[feature_id, :]
+    else:
+        if feature_id >= w_dec.shape[1]:
+            raise IndexError(f"Feature ID {feature_id} outside w_dec cols {w_dec.shape[1]}")
+        w_dec_vec = w_dec[:, feature_id]
+
+    b_enc_val = (
+        sae_tensors["b_enc"].detach().cpu()[feature_id].float()
+        if "b_enc" in sae_tensors
+        else torch.tensor(0.0, dtype=torch.float32)
+    )
+    thresh_val = (
+        sae_tensors["threshold"].detach().cpu()[feature_id].float()
+        if "threshold" in sae_tensors
+        else torch.tensor(0.0, dtype=torch.float32)
+    )
+    return {
+        "w_enc": torch.nan_to_num(w_enc_vec.float(), nan=0.0, posinf=0.0, neginf=0.0),
+        "b_enc": torch.nan_to_num(b_enc_val, nan=0.0, posinf=0.0, neginf=0.0),
+        "threshold": torch.nan_to_num(thresh_val, nan=0.0, posinf=0.0, neginf=0.0),
+        "w_dec": torch.nan_to_num(w_dec_vec.float(), nan=0.0, posinf=0.0, neginf=0.0),
+    }
+
+
 def extract_feature_vector(
     sae_tensors: Dict[str, torch.Tensor],
     feature_id: int,
@@ -282,6 +327,76 @@ class SteeringHookManager:
 
     @contextmanager
     def active(self):
+        handle = self.layers[self.layer].register_forward_hook(self._hook)
+        self._handles.append(handle)
+        try:
+            yield self
+        finally:
+            handle.remove()
+            self._handles.remove(handle)
+
+    def clear(self):
+        for handle in self._handles:
+            handle.remove()
+        self._handles.clear()
+
+
+class ConditionalAblationHookManager:
+    """Sequentially ablate one or more SAE features only when they fire."""
+
+    def __init__(
+        self,
+        model,
+        layer: int,
+        specs: Iterable[Tuple[Dict[str, torch.Tensor], float]],
+        device: str = "cuda:0",
+    ):
+        self.layers = locate_language_layers(model)
+        if layer < 0 or layer >= len(self.layers):
+            raise IndexError(f"Layer {layer} outside 0..{len(self.layers)-1}")
+        self.layer = layer
+        self.device = torch.device(device)
+        self.specs = [
+            (
+                {k: v.detach().float().to(self.device) for k, v in params.items()},
+                float(beta),
+            )
+            for params, beta in specs
+            if float(beta) != 0.0
+        ]
+        self._handles = []
+
+    def _hook(self, _module, _args, output):
+        hidden = output[0] if isinstance(output, tuple) else output
+        if not torch.is_tensor(hidden) or not self.specs:
+            return output
+        if hidden.ndim != 3 or hidden.shape[1] == 0:
+            return output
+
+        original_dtype = hidden.dtype
+        steered = hidden.float().clone()
+        target = steered[:, -1:, :]
+        for params, beta in self.specs:
+            pre = torch.matmul(target, params["w_enc"]) + params["b_enc"]
+            act = torch.where(pre > params["threshold"], pre, torch.zeros_like(pre))
+            target = target - (beta * act.unsqueeze(-1) * params["w_dec"])
+        steered[:, -1:, :] = target
+        steered = torch.nan_to_num(
+            steered,
+            nan=0.0,
+            posinf=torch.finfo(original_dtype).max,
+            neginf=-torch.finfo(original_dtype).max,
+        ).to(original_dtype)
+
+        if isinstance(output, tuple):
+            return (steered,) + output[1:]
+        return steered
+
+    @contextmanager
+    def active(self):
+        if not self.specs:
+            yield self
+            return
         handle = self.layers[self.layer].register_forward_hook(self._hook)
         self._handles.append(handle)
         try:
